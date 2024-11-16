@@ -1,0 +1,93 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_better                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ycharkou <ycharkou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/13 19:57:05 by ycharkou          #+#    #+#             */
+/*   Updated: 2024/11/14 11:51:10 by ycharkou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+char *get_next_line(int fd)
+{
+	static char	*accumulation;
+	char		*new_accumulation;
+	char		*buffer;
+	char		*line;
+	char 		*nl_address;
+	size_t		nl_index;
+	ssize_t		read_return;
+
+	//check for erorrs
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if (read(fd, buffer, 0) < 0)
+	{
+		free(buffer);
+		return (NULL);
+	}
+	//the start of code
+	buffer[BUFFER_SIZE] = '\0';
+	read_return = read(fd, buffer, BUFFER_SIZE);
+	accumulation = NULL;
+	while (read_return == BUFFER_SIZE)
+	{
+		buffer[read_return] = '\0';
+		accumulation = ft_strjoin(accumulation, buffer);
+		nl_address = ft_strchr(accumulation, '\n');
+		// should we calculate the index if nl_address is NULL
+		
+		if (nl_address)
+			break;
+		read_return = read(fd, buffer, BUFFER_SIZE);
+	}
+	if (read_return < BUFFER_SIZE && read_return > 0)
+	{
+		buffer[read_return] = '\0';
+		// buffer = ft_substr(buffer, 0, read_return);
+		accumulation = ft_strjoin(accumulation, buffer);
+	}
+	if (nl_address)
+	{
+		nl_index = nl_address - accumulation;
+		line = ft_substr(accumulation, 0, nl_index + 1);
+		// line[nl_index + 1] = '\0';
+		// accumulation = ft_substr(accumulation, nl_index, BUFFER_SIZE);
+		new_accumulation = ft_strdup(accumulation + nl_index + 1);
+		free(accumulation);
+		accumulation = new_accumulation;
+		// if (nl_address)
+		// {
+		// 	line = ft_substr(accumulation, 0, nl_index + 1);
+		// 	char *new_accumulation = ft_strdup(accumulation + nl_index + 1);
+		// 	free(accumulation);
+		// 	accumulation = new_accumulation;
+		// }
+	}
+	else
+	{
+		line = ft_strdup(accumulation);
+		free(accumulation);
+		accumulation = NULL;
+	}
+		// else
+		// {
+		// 	line = ft_strdup(accumulation);
+		// 	free(accumulation);
+		// 	accumulation = NULL;
+		// }
+	// handle the end of file
+	if (read_return == 0 && !accumulation)
+		return (NULL);
+	free(buffer);
+	return (line);
+}

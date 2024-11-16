@@ -1,0 +1,158 @@
+#include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+char *get_next_line(int fd)
+{
+	static char	*accumulation;
+	char		*buffer;
+	char		*line;
+	size_t nl_index;//new line 's index
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	buffer[BUFFER_SIZE + 1] = '\0';
+	nl_index = 0;
+	while (read(fd, buffer, BUFFER_SIZE) > 0)
+	{
+		
+		// printf("buffer: %s\n", buffer);
+		accumulation = ft_strjoin(accumulation, buffer);
+		// printf("accumulation: %s\n", accumulation);
+		nl_index = ft_strchr(accumulation, '\n');
+		if (nl_index )
+			break;
+	}
+	line = ft_substr(accumulation, 0, nl_index);
+	line[nl_index] = '\0';
+	accumulation = ft_substr(accumulation, nl_index + 1, BUFFER_SIZE);
+	return (line);
+}
+// // methode #1: t9ra tatl9a newline w3ad returniha nishan
+// yaaqoublwazzani$ismaill fassi
+// // methode #2: tb9a tjm3 dok lbuffers kamlin tatl9a newline
+// strst rstrs tr$st rstrstr$
+// 			  nl_index
+------------------------------------------------------------------------------------------
+#include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+char *get_next_line(int fd)
+{
+	static char	*accumulation;
+	char		*buffer;
+	char		*line;
+	size_t nl_index;//new line 's index
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	buffer[BUFFER_SIZE] = '\0';
+	nl_index = 0;
+	while (read(fd, buffer, BUFFER_SIZE) > 0)
+	{
+		// printf("buffer: %s\n", buffer);
+		accumulation = ft_strjoin(accumulation, buffer);
+		// printf("accumulation: %s\n", accumulation);
+		nl_index = ft_strchr(accumulation, '\n');
+		if (nl_index)
+			break;
+		else
+			printf("buffer: %s\n", buffer);
+	}
+	if (nl_index)
+	{
+		// we return the line , and update the value for the static var;
+		line = ft_substr(accumulation, 0, nl_index);
+		line[nl_index] = '\0';
+		accumulation = ft_substr(accumulation, nl_index + 1, BUFFER_SIZE);
+	}
+	else
+	{
+		
+		printf("accumulation: %s\n", accumulation);
+		line = accumulation;
+	}
+	return (line);
+}
+// // methode #1: t9ra tatl9a newline w3ad returniha nishan
+// yaaqoublwazzani$ismaill fassi
+// // methode #2: tb9a tjm3 dok lbuffers kamlin tatl9a newline
+// strst rstrs tr$st rstrstr$
+// 			  nl_index
+
+----------------------------------------------
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ycharkou <ycharkou@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/13 19:57:05 by ycharkou          #+#    #+#             */
+/*   Updated: 2024/11/13 20:05:33 by ycharkou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line.h"
+#include <stdlib.h>
+#include <unistd.h>
+
+char	*get_next_line(int fd)
+{
+	static char	*accumulation;
+	char		*buffer;
+	char		*line;
+	char		*nl_address;
+	size_t		nl_index;
+	ssize_t 	read_return;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if ((read_return = read(fd, buffer, BUFFER_SIZE)) <= 0)
+	{
+		free(buffer);
+		return (NULL);
+	}
+	buffer[BUFFER_SIZE] = '\0';
+
+	nl_index = 0;
+	while (read_return == BUFFER_SIZE)
+	{
+		accumulation = ft_strjoin(accumulation, buffer);
+		nl_address = ft_strchr(accumulation, '\n');
+		nl_index = nl_address - accumulation;
+		if (nl_address)
+			break;
+		read_return = read(fd, buffer, BUFFER_SIZE);
+	}
+	// ila kayen new line
+	if (nl_address)
+	{
+		line = ft_substr(accumulation, 0, nl_index + 1);
+		line[nl_index + 1] = '\0';
+		accumulation = ft_substr(accumulation, nl_index + 1, BUFFER_SIZE);
+	}
+	// end of file  , no new line
+	if (read_return < BUFFER_SIZE && read_return > 0)
+	{
+		buffer = ft_substr(buffer, 0, read_return);
+		accumulation = ft_strjoin(accumulation, buffer);
+	}
+	return (line);
+}
+
+// // methode #1: t9ra tatl9a newline w3ad returniha nishan
+// yaaqoublwazzani$ismaill fassi
+// // methode #2: tb9a tjm3 dok lbuffers kamlin tatl9a newline
+// strst rstrs tr$st rstrstr$
+// 			  nl_index
