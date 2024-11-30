@@ -6,7 +6,7 @@
 /*   By: ycharkou <ycharkou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:19:28 by ycharkou          #+#    #+#             */
-/*   Updated: 2024/11/14 13:58:24 by ycharkou         ###   ########.fr       */
+/*   Updated: 2024/11/20 16:49:04 by ycharkou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,17 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
+#  define BUFFER_SIZE 42
 # endif
 
-# include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
-// REMOOOOOVE BEFORE PUSHING
-# include <stdio.h>
 
-
-char 	*get_next_line(int fd);
-size_t	ft_strchr(const char *s, int c);
-size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
-char *ft_substr(char *accumulation, unsigned int start, size_t len);
-size_t ft_strlen(const char *s);
-char *ft_strjoin(char *accumulation, char *buffer);
-char *ft_strdup(const char *s1);
+char	*get_next_line(int fd);
+ssize_t	ft_strchr(const char *accumulation, int c);
+size_t	ft_strlen(const char *accumulation);
+char	*ft_strjoin(char *acc, char *buff);
+char	*ft_strdup(const char *s1);
+char	*ft_substr(char *accumulation, unsigned int start, size_t len);
 
 #endif
